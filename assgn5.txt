@@ -1,0 +1,58 @@
+/*Write a PL/SQL code block to calculate the area of a circle for a value of radius varying from 5 to 9. Store the radius and the corresponding values of calculated area in an empty table named areas, consisting of two columns, radius and area.*/
+
+mysql> create database Area_Circle;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use Area_Circle
+Database changed
+
+mysql> create table Area(Radius int , Area double);
+Query OK, 0 rows affected (0.30 sec)
+
+mysql> drop procedure if exists Area_circle;
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+
+mysql> delimiter //
+
+mysql> create procedure Area_circle()
+    -> BEGIN
+    -> declare A numeric(10,2);
+    -> declare R int;
+    -> 
+    ->        SET R:=5;
+    ->   simple_loop: LOOP
+    ->   set A:=3.14*R*R;
+    -> insert into Area(Radius,Area) values(R,A);
+    ->          SET R:=R+1;
+    ->   
+    ->   
+    ->          IF R=10 THEN
+    ->             LEAVE simple_loop;
+    ->          END IF;
+    ->    END LOOP simple_loop;
+    -> 
+    -> 
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> 
+mysql> delimiter ;
+mysql> select * from Area;
+Empty set (0.00 sec)
+
+mysql> call Area_circle();
+Query OK, 1 row affected (0.31 sec)
+
+mysql> select * from Area;
++--------+--------+
+| Radius | Area   |
++--------+--------+
+|      5 |   78.5 |
+|      6 | 113.04 |
+|      7 | 153.86 |
+|      8 | 200.96 |
+|      9 | 254.34 |
++--------+--------+
+5 rows in set (0.00 sec)
+

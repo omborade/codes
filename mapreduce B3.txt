@@ -1,0 +1,66 @@
+test> use TE;
+switched to db TE
+TE> db.createCollection("Stud_data");
+{ ok: 1 }
+TE> db.Stud_data.insert([{Rno:1,Fee:25000,Class:"TE"},{Rno:2,Fee:5000,Class:"TE"},{Rno:1,Fee:1200,Class:"TE"},{Rno:1,Fee:15000,Class:"SE"},{Rno:3,Fee:1000,Class:"SE"},{Rno:3,Fee:12500,Class:"SE"}]);
+DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6549012296c09c1a8e6e08ef"),
+    '1': ObjectId("6549012296c09c1a8e6e08f0"),
+    '2': ObjectId("6549012296c09c1a8e6e08f1"),
+    '3': ObjectId("6549012296c09c1a8e6e08f2"),
+    '4': ObjectId("6549012296c09c1a8e6e08f3"),
+    '5': ObjectId("6549012296c09c1a8e6e08f4")
+  }
+}
+TE> db.Stud_data.find().pretty();
+[
+  {
+    _id: ObjectId("6549012296c09c1a8e6e08ef"),
+    Rno: 1,
+    Fee: 25000,
+    Class: 'TE'
+  },
+  {
+    _id: ObjectId("6549012296c09c1a8e6e08f0"),
+    Rno: 2,
+    Fee: 5000,
+    Class: 'TE'
+  },
+  {
+    _id: ObjectId("6549012296c09c1a8e6e08f1"),
+    Rno: 1,
+    Fee: 1200,
+    Class: 'TE'
+  },
+  {
+    _id: ObjectId("6549012296c09c1a8e6e08f2"),
+    Rno: 1,
+    Fee: 15000,
+    Class: 'SE'
+  },
+  {
+    _id: ObjectId("6549012296c09c1a8e6e08f3"),
+    Rno: 3,
+    Fee: 1000,
+    Class: 'SE'
+  },
+  {
+    _id: ObjectId("6549012296c09c1a8e6e08f4"),
+    Rno: 3,
+    Fee: 12500,
+    Class: 'SE'
+  }
+]
+TE> db.Stud_data.mapReduce(function(){emit(this.Rno,this.Fee);},function(Rno,Fee){return Array.sum(Fee)},{query:{Class:"TE"},out:"TE_FEE_DETAILS"});
+DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead.
+See https://docs.mongodb.com/manual/core/map-reduce for details.
+{ result: 'TE_FEE_DETAILS', ok: 1 }
+TE> db.TE_FEE_DETAILS.find().pretty();
+[ { _id: 1, value: 26200 }, { _id: 2, value: 5000 } ]
+TE> db.Stud_data.mapReduce(function(){emit(this.Rno,this.Fee);},function(key,values){return Array.sum(values)},{query:{Class:"SE"},out:"SE_FEE_DETAILS"});
+{ result: 'SE_FEE_DETAILS', ok: 1 }
+TE> db.SE_FEE_DETAILS.find().pretty();
+[ { _id: 1, value: 15000 }, { _id: 3, value: 13500 } ]

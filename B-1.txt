@@ -1,0 +1,294 @@
+/*"MongoDB Queries:
+DesignandDevelopMongoDBQueriesusingCRUDoperations.(UseCRUDoperations, SAVE method, logical operators etc.)."*/
+
+gescoe@gescoe-OptiPlex-3010:~$ mongo
+MongoDB shell version: 2.6.12
+connecting to: test
+> use TEB36
+switched to db TEB36
+> db.createCollection("Studentdata");
+{ "ok" : 1 }
+> db.Studentdata.insert({Roll:1,Name:"Samradni",Branch:"Computer"});
+WriteResult({ "nInserted" : 1 })
+> db.Studentdata.insert([{Roll:2,Name:"Purva",Branch:"Mechanical"},{Roll:3,Name:"Toshi",Branch:"Medical"}]);
+BulkWriteResult({
+	"writeErrors" : [ ],
+	"writeConcernErrors" : [ ],
+	"nInserted" : 2,
+	"nUpserted" : 0,
+	"nMatched" : 0,
+	"nModified" : 0,
+	"nRemoved" : 0,
+	"upserted" : [ ]
+})
+> db.Studentdata.insert([{Roll:4,Name:"Akshada",Branch:"Computer",Subject:"DBMS"},{Roll:5,Name:"Kasturi",Branch:"IT",Subject:"TOC"}]);
+BulkWriteResult({
+	"writeErrors" : [ ],
+	"writeConcernErrors" : [ ],
+	"nInserted" : 2,
+	"nUpserted" : 0,
+	"nMatched" : 0,
+	"nModified" : 0,
+	"nRemoved" : 0,
+	"upserted" : [ ]
+})
+> db.Studentdata.find().pretty();
+{
+	"_id" : ObjectId("652e1e94bb3faf5484910a77"),
+	"Roll" : 1,
+	"Name" : "Samradni",
+	"Branch" : "Computer"
+}
+{
+	"_id" : ObjectId("652e1edabb3faf5484910a78"),
+	"Roll" : 2,
+	"Name" : "Purva",
+	"Branch" : "Mechanical"
+}
+{
+	"_id" : ObjectId("652e1edabb3faf5484910a79"),
+	"Roll" : 3,
+	"Name" : "Toshi",
+	"Branch" : "Medical"
+}
+{
+	"_id" : ObjectId("652e1f79bb3faf5484910a7a"),
+	"Roll" : 4,
+	"Name" : "Akshada",
+	"Branch" : "Computer",
+	"Subject" : "DBMS"
+}
+{
+	"_id" : ObjectId("652e1f79bb3faf5484910a7b"),
+	"Roll" : 5,
+	"Name" : "Kasturi",
+	"Branch" : "IT",
+	"Subject" : "TOC"
+}
+> db.Studentdata.update({Roll:3},{$set:{Branch:"AI"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Studentdata.find({Branch:"AI"}).pretty()
+{
+	"_id" : ObjectId("652e1edabb3faf5484910a79"),
+	"Roll" : 3,
+	"Name" : "Toshi",
+	"Branch" : "AI"
+}
+> db.Studentdata.remove({Roll:2})
+WriteResult({ "nRemoved" : 1 })
+> db.Studentdata.find().pretty();
+{
+	"_id" : ObjectId("652e1e94bb3faf5484910a77"),
+	"Roll" : 1,
+	"Name" : "Samradni",
+	"Branch" : "Artificial Intelligence"
+}
+{
+	"_id" : ObjectId("652e1edabb3faf5484910a79"),
+	"Roll" : 3,
+	"Name" : "Toshi",
+	"Branch" : "AI"
+}
+{
+	"_id" : ObjectId("652e1f79bb3faf5484910a7a"),
+	"Roll" : 4,
+	"Name" : "Akshada",
+	"Branch" : "Computer",
+	"Subject" : "DBMS"
+}
+{
+	"_id" : ObjectId("652e1f79bb3faf5484910a7b"),
+	"Roll" : 5,
+	"Name" : "Kasturi",
+	"Branch" : "IT",
+	"Subject" : "TOC"
+}
+--------------------------------------------------------------------------------------------------------
+Logical And Conditional Operation
+--------------------------------------------------------------------------------------------------------
+> db.createCollection("Employee")
+{ "ok" : 1 }
+> db.Employee.insert([{EmpID:1,Name:"Samradni",Salary:300000},{EmpID:2,Name:"Purva",Salary:250000},{EmpID:3,Name:"Toshi",Salary:250000}])
+BulkWriteResult({
+	"writeErrors" : [ ],
+	"writeConcernErrors" : [ ],
+	"nInserted" : 3,
+	"nUpserted" : 0,
+	"nMatched" : 0,
+	"nModified" : 0,
+	"nRemoved" : 0,
+	"upserted" : [ ]
+})
+
+> db.Employee.find().pretty()
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d40"),
+	"EmpID" : 1,
+	"Name" : "Samradni",
+	"Salary" : 300000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d41"),
+	"EmpID" : 2,
+	"Name" : "Purva",
+	"Salary" : 250000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d42"),
+	"EmpID" : 3,
+	"Name" : "Toshi",
+	"Salary" : 250000
+}
+
+> db.Employee.find({"Salary": { $eq: 300000}}).pretty()
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d40"),
+	"EmpID" : 1,
+	"Name" : "Samradni",
+	"Salary" : 300000
+}
+
+> db.Employee.find({"Salary": { $lt: 300000}}).pretty()
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d41"),
+	"EmpID" : 2,
+	"Name" : "Purva",
+	"Salary" : 250000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d42"),
+	"EmpID" : 3,
+	"Name" : "Toshi",
+	"Salary" : 250000
+}
+
+> db.Employee.find({"Salary": { $gt: 250000}}).pretty()
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d40"),
+	"EmpID" : 1,
+	"Name" : "Samradni",
+	"Salary" : 300000
+}
+> db.Employee.find({"Salary": { $gt: 1000}}).pretty()
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d40"),
+	"EmpID" : 1,
+	"Name" : "Samradni",
+	"Salary" : 300000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d41"),
+	"EmpID" : 2,
+	"Name" : "Purva",
+	"Salary" : 250000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d42"),
+	"EmpID" : 3,
+	"Name" : "Toshi",
+	"Salary" : 250000
+}
+
+> db.Employee.insert([{EmpID:4,Name:"Poonam",Salary:30000,Age:18},{EmpID:5,Name:"Puja",Salary:23000,Age:25},{EmpID:6,Name:"Shivani",Salary:20000,Age:20}])
+BulkWriteResult({
+	"writeErrors" : [ ],
+	"writeConcernErrors" : [ ],
+	"nInserted" : 3,
+	"nUpserted" : 0,
+	"nMatched" : 0,
+	"nModified" : 0,
+	"nRemoved" : 0,
+	"upserted" : [ ]
+})
+
+> db.Employee.find().pretty()
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d40"),
+	"EmpID" : 1,
+	"Name" : "Samradni",
+	"Salary" : 300000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d41"),
+	"EmpID" : 2,
+	"Name" : "Purva",
+	"Salary" : 250000
+}
+{
+	"_id" : ObjectId("652e28dcf15a8a3435ab8d42"),
+	"EmpID" : 3,
+	"Name" : "Toshi",
+	"Salary" : 250000
+}
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d43"),
+	"EmpID" : 4,
+	"Name" : "Poonam",
+	"Salary" : 30000,
+	"Age" : 18
+}
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d44"),
+	"EmpID" : 5,
+	"Name" : "Puja",
+	"Salary" : 23000,
+	"Age" : 25
+}
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d45"),
+	"EmpID" : 6,
+	"Name" : "Shivani",
+	"Salary" : 20000,
+	"Age" : 20
+}
+
+> db.Employee.find({"Age": { $gt:20}}).pretty()
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d44"),
+	"EmpID" : 5,
+	"Name" : "Puja",
+	"Salary" : 23000,
+	"Age" : 25
+}
+
+> db.Employee.find({"Age": { $gte:18}}).pretty()
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d43"),
+	"EmpID" : 4,
+	"Name" : "Poonam",
+	"Salary" : 30000,
+	"Age" : 18
+}
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d44"),
+	"EmpID" : 5,
+	"Name" : "Puja",
+	"Salary" : 23000,
+	"Age" : 25
+}
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d45"),
+	"EmpID" : 6,
+	"Name" : "Shivani",
+	"Salary" : 20000,
+	"Age" : 20
+}
+
+> db.Employee.find({ $and: [{"Salary": 20000}, {"Age": {$gt:18, $lt: 23}}]}).pretty()
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d45"),
+	"EmpID" : 6,
+	"Name" : "Shivani",
+	"Salary" : 20000,
+	"Age" : 20
+}
+
+> db.Employee.find({ $or: [{"Salary": "20000"}, {"Age":25}]}).pretty()
+{
+	"_id" : ObjectId("652e2a8bf15a8a3435ab8d44"),
+	"EmpID" : 5,
+	"Name" : "Puja",
+	"Salary" : 23000,
+	"Age" : 25
+}
+

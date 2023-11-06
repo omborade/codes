@@ -1,0 +1,82 @@
+/*"SQL Queries – all types of Join, Sub-Query and View:
+Write at least10 SQL queries for suitable database application using SQL DML statements."*/
+mysql> create database STudent;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use STudent
+Database changed
+mysql> create table Student_marks(Rolln int Primary key,Name varchar(20),Marks int,Branch varchar(20));
+Query OK, 0 rows affected (0.28 sec)
+
+mysql> insert into Student_marks(Rolln,Name,Marks,Branch) values(1,'Ravi',90,'Computer'),(2,'Vedika',70,'Computer'),(3,'Aarush',95,'IT'),(4,'Jyoti',60,'IT');
+Query OK, 4 rows affected (0.05 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from Student_marks;
++-------+--------+-------+----------+
+| Rolln | Name   | Marks | Branch   |
++-------+--------+-------+----------+
+|     1 | Ravi   |    90 | Computer |
+|     2 | Vedika |    70 | Computer |
+|     3 | Aarush |    95 | IT       |
+|     4 | Jyoti  |    60 | IT       |
++-------+--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select name,marks from Student_marks where marks > 70;
++--------+-------+
+| name   | marks |
++--------+-------+
+| Ravi   |    90 |
+| Aarush |    95 |
++--------+-------+
+2 rows in set (0.00 sec)
+
+mysql> select name,marks from Student_marks where marks<70;
++-------+-------+
+| name  | marks |
++-------+-------+
+| Jyoti |    60 |
++-------+-------+
+1 row in set (0.00 sec)
+
+mysql> select name,marks from Student_marks where name='Vedika'and marks=70;
++--------+-------+
+| name   | marks |
++--------+-------+
+| Vedika |    70 |
++--------+-------+
+1 row in set (0.00 sec
+
+mysql> select * from Student_marks;
++-------+--------+-------+----------+
+| Rolln | Name   | Marks | Branch   |
++-------+--------+-------+----------+
+|     1 | Sachin |    90 | Computer |
+|     2 | Vedika |    70 | Computer |
+|     3 | Aarush |    95 | IT       |
+|     4 | Jyoti  |    60 | IT       |
++-------+--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> delete from Student_marks where name='Aarush';
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from Student_marks;
++-------+--------+-------+----------+
+| Rolln | Name   | Marks | Branch   |
++-------+--------+-------+----------+
+|     1 | Sachin |    90 | Computer |
+|     2 | Vedika |    70 | Computer |
+|     4 | Jyoti  |    60 | IT       |
++-------+--------+-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select name,max(marks) from Student_marks;
++--------+------------+
+| name   | max(marks) |
++--------+------------+
+| Sachin |         90 |
++--------+------------+
+1 row in set (0.00 sec)
+

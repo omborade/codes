@@ -1,0 +1,99 @@
+/*"Database Trigger (All Types: Row level and Statement level triggers, Before and After Triggers).
+Write a database trigger on Library table. The System should keep track of the records that are being updated or deleted. The old value of updated or deleted records should be added in Library_Audit table."*/
+
+mysql> create database assgn8;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use assgn8;
+Database changed
+mysql> create table Lib_Book(Bid int,Bname varchar(20),Bqty int);
+Query OK, 0 rows affected (0.31 sec)
+
+mysql> create table Lib_Audit(Bid int,bname varchar(20),Bqty int);
+Query OK, 0 rows affected (0.28 sec)
+
+mysql> insert into Lib_Book values(1,'DBMS',15),(2,'TOC',20),(3,'CNS',12);
+Query OK, 3 rows affected (0.05 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Lib_Book;
++------+-------+------+
+| Bid  | Bname | Bqty |
++------+-------+------+
+|    1 | DBMS  |   15 |
+|    2 | TOC   |   20 |
+|    3 | CNS   |   12 |
++------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * from Lib_Audit;
+Empty set (0.00 sec)
+mysql> drop trigger if exists Make_Audit2;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> delimiter //
+mysql> CREATE TRIGGER Make_Audit2
+    -> AFTER DELETE ON Lib_Book
+    -> for each row
+    -> BEGIN
+    -> insert into Lib_Audit(Bid,Bname,Bqty)
+    -> values (old.Bid,old.Bname,old.Bqty);
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> 
+mysql> delimiter ;
+mysql> delete from Lib_Book where Bid=3;
+Query OK, 1 row affected (0.06 sec)
+
+mysql> select * from Lib_Book;
++------+-------+------+
+| Bid  | Bname | Bqty |
++------+-------+------+
+|    1 | DBMS  |   15 |
+|    2 | TOC   |   20 |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from Lib_Audit;
++------+-------+------+
+| Bid  | bname | Bqty |
++------+-------+------+
+|    3 | CNS   |   12 |
++------+-------+------+
+1 row in set (0.00 sec)
+
+mysql> update Lib_Book set Bqty=10 where Bid=1;
+Query OK, 1 row affected (0.06 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> drop trigger if exists Make_audit4;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> delimiter //
+mysql> CREATE TRIGGER Make_audit4
+    -> AFTER UPDATE ON Lib_Book
+    -> for each row
+    -> BEGIN
+    -> insert into Lib_Audit(Bid,Bname,Bqty)
+    -> values (old.Bid,old.Bname,old.Bqty);
+    -> END;
+    -> //
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> 
+mysql> delimiter ;
+mysql> update Lib_Book set Bqty=22 where Bid=1;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Lib_Book;
++------+-------+------+
+| Bid  | Bname | Bqty |
++------+-------+------+
+|    1 | DBMS  |   22 |
+|    2 | TOC   |   20 |
++------+-------+------+
+2 rows in set (0.00 sec)
+

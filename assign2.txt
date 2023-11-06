@@ -1,0 +1,203 @@
+/*"SQL Queries:
+a.Design and Develop SQLDDL statements which demonstrate the use of SQL objects such as Table, View, Index, Sequence, Synonym, different constraints etc.
+b.Write at least 10 SQL queries on the suitable database application using SQL DML statements."*/
+
+gescoe@gescoe-OptiPlex-3010:~$ mysql -h 192.168.2.232 -u TEB36 -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7
+Server version: 5.6.41 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database myData;
+
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use myData
+Database changed
+mysql> create table account(accno int primary key,name varchar(100),balance double,city varchar(20));
+Query OK, 0 rows affected (0.31 sec)
+
+mysql>  insert into account(accno,name,balance,city) values(1,'Samradni',200000,'Nashik'),(2,'Purva',100000,'Mumbai'),(3,'Toshi',10000,'Sangli'),(4,'Sushma',10042,'Satara');
+
+mysql> create table Loan(loan_no int primary key,name varchar(100),loan_amount int);
+Query OK, 0 rows affected (0.29 sec)
+
+mysql> insert into Loan(loan_no,name,loan_amount) values(1,'Sakshi',10000),(2,'Monika',12300) ;
+Query OK, 2 rows affected (0.04 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from account;
+
++-------+----------+---------+--------+
+| accno | name     | balance | city   |
++-------+----------+---------+--------+
+|     1 | Samradni |  200000 | Nashik |
+|     2 | Purva    |  100000 | Mumbai |
+|     3 | Toshi    |   10000 | Sangli |
+|     4 | Sushma   |   10042 | Satara |
++-------+----------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from Loan;
++---------+--------+-------------+
+| loan_no | name   | loan_amount |
++---------+--------+-------------+
+|       1 | Sakshi |       10000 |
+|       2 | Monika |       12300 |
++---------+--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> select a.name,l.name from account as a,Loan as l where a.name=l.name;
+Empty set (0.00 sec)
+
+mysql> insert into Loan(loan_no,name,loan_amount) values (3,'Purva',1200);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from Loan;
++---------+--------+-------------+
+| loan_no | name   | loan_amount |
++---------+--------+-------------+
+|       1 | Sakshi |       10000 |
+|       2 | Monika |       12300 |
+|       3 | Purva  |        1200 |
++---------+--------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select a.name from account as a,Loan as l where a.name=l.name;
++-------+
+| name  |
++-------+
+| Purva |
++-------+
+1 row in set (0.00 sec)
+
+mysql> select name from account where name not in (select name from Loan) union select name from Loan where name not in (select name from account);
++----------+
+| name     |
++----------+
+| Samradni |
+| Toshi    |
+| Sushma   |
+| Sakshi   |
+| Monika   |
++----------+
+5 rows in set (0.00 sec)
+
+mysql> create index acname on account(name);
+Query OK, 0 rows affected (0.39 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show indexes from account;
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table   | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| account |          0 | PRIMARY  |            1 | accno       | A         |           4 |     NULL | NULL   |      | BTREE      |         |               |
+| account |          1 | acname   |            1 | name        | A         |           4 |     NULL | NULL   | YES  | BTREE      |         |               |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from account where name not in(select name from Loan);
++-------+----------+---------+--------+
+| accno | name     | balance | city   |
++-------+----------+---------+--------+
+|     1 | Samradni |  200000 | Nashik |
+|     3 | Toshi    |   10000 | Sangli |
+|     4 | Sushma   |   10042 | Satara |
++-------+----------+---------+--------+
+3 rows in set (0.00 sec)
+
+
+mysql> create view accview as select accno,name,balance,city from account;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select * from accview;
++-------+----------+---------+--------+
+| accno | name     | balance | city   |
++-------+----------+---------+--------+
+|     1 | Samradni |  200000 | Nashik |
+|     2 | Purva    |  100000 | Mumbai |
+|     3 | Toshi    |   10000 | Sangli |
+|     4 | Sushma   |   10042 | Satara |
++-------+----------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> create view cbb as select accno,name,balance from account where balance >65500;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select accno,name,balance from cbb;
++-------+----------+---------+
+| accno | name     | balance |
++-------+----------+---------+
+|     1 | Samradni |  200000 |
+|     2 | Purva    |  100000 |
++-------+----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> create view cbn as select name,balance,city from account where balance > 65000 and city='Nashik';
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> select name,balance,city from cbn;
++----------+---------+--------+
+| name     | balance | city   |
++----------+---------+--------+
+| Samradni |  200000 | Nashik |
++----------+---------+--------+
+1 row in set (0.00 sec)
+
+mysql> select name,balance from account order by balance ASC;
++----------+---------+
+| name     | balance |
++----------+---------+
+| Toshi    |   10000 |
+| Sushma   |   10042 |
+| Purva    |  100000 |
+| Samradni |  200000 |
++----------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select name,loan_amount from Loan order by loan_amount DESC;
++--------+-------------+
+| name   | loan_amount |
++--------+-------------+
+| Monika |       12300 |
+| Sakshi |       10000 |
+| Purva  |        1200 |
++--------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> create index AC on account(accno,name);
+Query OK, 0 rows affected (0.30 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show indexes from account;
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table   | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| account |          0 | PRIMARY  |            1 | accno       | A         |           4 |     NULL | NULL   |      | BTREE      |         |               |
+| account |          1 | acname   |            1 | name        | A         |           4 |     NULL | NULL   | YES  | BTREE      |         |               |
+| account |          1 | AC       |            1 | accno       | A         |           4 |     NULL | NULL   |      | BTREE      |         |               |
+| account |          1 | AC       |            2 | name        | A         |           4 |     NULL | NULL   | YES  | BTREE      |         |               |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+4 rows in set (0.00 sec)
+
+
+mysql> select name, balance*20*8/100 as interest from account;
++----------+----------+
+| name     | interest |
++----------+----------+
+| Samradni |   320000 |
+| Purva    |   160000 |
+| Toshi    |    16000 |
+| Sushma   |  16067.2 |
++----------+----------+
+4 rows in set (0.00 sec)
+
+
